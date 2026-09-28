@@ -18,7 +18,9 @@ Generate the layout scaffolding for a PatternFly page that uses Red Hat Design S
 
 ## Gate check
 
-Read `package.json`. This skill requires both `@patternfly/react-core` (6.x+) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only PF is present, generate a standard PF `Page` layout and note that RHDS packages are not installed. If only RHDS is present, this skill does not apply.
+Read `package.json`. This skill requires both `@patternfly/react-core` (6.x+) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only RHDS is present, this skill does not apply.
+
+If only PF is present (no RHDS packages): generate a standard PF `Page` layout using `Masthead`, `PageSidebar`, and `PageSection`. Do not use or mention any RHDS component names, element tag names, or RHDS package names anywhere in your response — not in code, not in imports, not in explanatory notes or suggestions. The user's project cannot use those components, so referencing them adds confusion.
 
 ## What to generate
 
