@@ -338,6 +338,7 @@ Write test cases that target what the skill **uniquely contributes** — don't t
 Evals use [agent-eval-harness](https://github.com/opendatahub-io/agent-eval-harness) and are colocated with their skill at `skills/<skill-name>/eval/eval.yaml`. See `plugins/patternfly/react/skills/pf-test-gen/eval/eval.yaml` for a working example. To run evals locally, install the harness plugin:
 
 ```bash
+claude plugin marketplace add https://github.com/opendatahub-io/agent-eval-harness.git
 claude plugin install agent-eval-harness@agent-eval-harness-dev
 ```
 
