@@ -1,4 +1,4 @@
-expect_rhds: true
+expect_rhds: false
 pattern: drawer
 has_header: false
 has_footer: false
