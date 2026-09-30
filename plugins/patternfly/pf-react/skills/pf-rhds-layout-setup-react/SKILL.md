@@ -86,7 +86,7 @@ The `footer` prop on `<Page>` accepts a custom footer element. Wrapping `<rh-foo
 ### Example
 
 ```tsx
-import { Page, PageSection } from '@patternfly/react-core';
+import { Page, PageFooter, PageSection } from '@patternfly/react-core';
 import '@rhds/elements/rh-footer/rh-footer.js';
 
 function AppLayout({ children }) {
@@ -145,7 +145,7 @@ function PlainLayout({ children }) {
   );
 
   return (
-    <Page isPlain header={rhdsHeader} footer={rhdsFooter}>
+    <Page isPlain masthead={rhdsHeader} footer={rhdsFooter}>
       <PageSection>
         {children}
       </PageSection>
@@ -186,11 +186,12 @@ function LayoutWithDrawer({ children, drawerContent, isDrawerOpen }) {
   return (
     <Page>
       <PageSection>
-        <Drawer isExpanded={isDrawerOpen} isViewport>
-          <DrawerContent panelContent={panelContent} />
-        </Drawer>
+        {children}
       </PageSection>
     </Page>
+    <Drawer isExpanded={isDrawerOpen} isViewport>
+      <DrawerContent panelContent={panelContent} />
+    </Drawer>
   );
 }
 ```
