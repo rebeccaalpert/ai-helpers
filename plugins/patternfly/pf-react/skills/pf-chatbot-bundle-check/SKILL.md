@@ -17,7 +17,13 @@ Scan a project's `@patternfly/chatbot` imports and flag patterns that inflate bu
 
 ## Gate check
 
-Read `package.json`. If `@patternfly/chatbot` is not a dependency, stop and report that this skill does not apply. Note the installed version — tree-shaking support is available in versions 6.8.0-prerelease.9 or later and added `exports` and `sideEffects` to the package. If version is prior to 6.8.0-prerelease.9, encourage upgrading to this version. Ensuring the user is using dynamic imports may help if they are unable to upgrade at this time.
+Read `package.json`. If `@patternfly/chatbot` is not a dependency, stop immediately — do not produce a `## ChatBot Bundle Audit` section or continue to any scan steps. Report exactly:
+
+```
+`@patternfly/chatbot` is not a dependency in this project. This skill does not apply.
+```
+
+If `@patternfly/chatbot` is present, note the installed version. Tree-shaking support (`exports` and `sideEffects` fields) was added in version `6.8.0-prerelease.9`. If the installed version is older than `6.8.0-prerelease.9`, the audit report should state: "Recommend: upgrade to `6.8.0-prerelease.9` or later for native tree-shaking support." Until the project can upgrade, dynamic subpath imports bypass the barrel and are the best available mitigation.
 
 ## How ChatBot tree-shaking works
 
@@ -41,9 +47,13 @@ The `MarkdownContent` component lazy-loads its markdown parser (`react-markdown`
 
 ### Step 1 — Find all ChatBot imports
 
+Search only TypeScript and JavaScript source files — CSS/SCSS files are checked separately in Step 6 and do not count toward the "Scanned" total.
+
 ```bash
 rg "@patternfly/chatbot" -t ts -t tsx -t js -t jsx -l
 ```
+
+The number of files this returns is the **Scanned** count for the report header.
 
 Then classify each import:
 
@@ -126,7 +136,7 @@ import { preloadMarkdownRenderer } from '@patternfly/chatbot/dist/dynamic/Markdo
 preloadMarkdownRenderer();
 ```
 
-This is optional — `MessageBox` already handles it. Only suggest it if messages visibly flash on first render.
+This is optional — `MessageBox` already handles it. Only suggest it when there is evidence of first-render flashing. Otherwise report the `### Markdown preloading` section as `NOT_NEEDED`.
 
 ### Step 6 — Check CSS import placement
 
@@ -150,41 +160,43 @@ If the project is itself a library or package (has `main`/`module`/`exports` in 
 
 ## Report format
 
+Use this exact template structure for every audit. The header lines and section headings must appear verbatim — downstream tooling parses them.
+
 ```
 ## ChatBot Bundle Audit
 
+**ChatBot version:** [exact version from package.json, e.g. 6.7.2]
 **Scanned:** [N] files importing @patternfly/chatbot
-**ChatBot version:** [version from package.json]
+
+[If version < 6.8.0-prerelease.9, include this line:]
+> Recommend: upgrade to `6.8.0-prerelease.9` or later for native tree-shaking. Until then, use dynamic subpath imports.
 
 ### Barrel-excluded components (must use dynamic import)
 
-- file/path.tsx:3 — `import { CodeModal } from '@patternfly/chatbot'`
-  This import is broken — CodeModal is excluded from the root barrel.
-  Fix: `import CodeModal from '@patternfly/chatbot/dist/dynamic/CodeModal'`
-  Also required: `import '@patternfly/chatbot/monaco-environment'` (once at app startup)
+[OK if none found, otherwise list each with file path and fix]
 
 ### Wildcard imports
 
-- file/path.tsx:1 — `import * as Chatbot from '@patternfly/chatbot'`
-  Fix: Use named imports or dynamic subpath imports
+[OK if none found, otherwise list each with file path and fix]
 
 ### Monaco worker setup
 
-- [Status: OK | MISSING | NOT_NEEDED]
+[OK | MISSING | NOT_NEEDED]
 
 ### Markdown preloading
 
-- [Status: OK | SUGGESTED | NOT_NEEDED]
+[OK | NOT_NEEDED | SUGGESTED — with rationale]
 
-### CSS import
+### CSS import order
 
-- [Status: OK | MISSING | WRONG_ORDER]
+[OK | MISSING | WRONG_ORDER]
 
 ### Consumer sideEffects
 
-- [Status: OK | MISSING | NOT_APPLICABLE]
-
+[OK | MISSING | NOT_APPLICABLE]
 ```
+
+Every section must appear as its own `###` heading — do not collapse sections into a summary table. The `**ChatBot version:**` and `**Scanned:**` lines must use those exact prefixes.
 
 ## Applying fixes
 
