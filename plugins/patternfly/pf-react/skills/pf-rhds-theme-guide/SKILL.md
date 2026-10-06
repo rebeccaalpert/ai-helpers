@@ -23,7 +23,7 @@ Before generating anything, scan the project for theme-related code. Search for:
 2. **`colorPalette` / `color-palette` usage** — look for RHDS components where `colorPalette` (or `color-palette`) is set. Classify each as:
    - **Redundant** — the value tracks the page theme (e.g., `theme === "dark" ? "darkest" : "lightest"`). If the project already toggles `pf-v6-theme-dark` on `<html>`, RHDS inherits `color-scheme` automatically and this mapping is unnecessary.
    - **Intentional override** — the value is a static string (e.g., `color-palette="dark"`) that forces the component to a fixed theme regardless of the page theme. This is a deliberate per-component override and should be kept.
-3. **Components with theme caveats** — search for usage of `CodeEditor`, `Hero`, `Chart` (from `@patternfly/react-charts`), `rh-footer`, and `rh-navigation-secondary-menu`. Check that the required theme props are present (see Section 3 below)
+3. **Components with theme caveats** — search for usage of `CodeEditor`, `Hero`, `Chart` (from `@patternfly/react-charts`), `rh-footer`, and `rh-navigation-secondary`. Check that the required theme props are present (see Section 3 below)
 4. **Dual switching conflicts** — check whether the project uses both a custom toggle AND an RHDS switcher component (`rh-scheme-toggle`, `rh-scheme-dropdown`).
 
 Report what you find before making changes.
@@ -178,15 +178,19 @@ Always renders in dark theme regardless of the page theme. This is by design —
 
 ```html
 <!-- No theme override needed — always dark -->
-<rh-footer></rh-footer>
+<rh-footer>
+...
+</rh-footer>
 ```
 
-**`rh-navigation-secondary-menu`**
+**`rh-navigation-secondary`**
 Always renders in light theme regardless of the page theme.
 
 ```html
 <!-- No theme override needed — always light -->
-<rh-navigation-secondary-menu></rh-navigation-secondary-menu>
+<rh-navigation-secondary>
+...
+</rh-navigation-secondary>
 ```
 
 ---
