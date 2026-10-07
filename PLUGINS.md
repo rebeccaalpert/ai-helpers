@@ -5,13 +5,13 @@ Quick reference of all plugins and what they contain. This file is auto-generate
 ## Table of Contents
 
 - [patternfly](#patternfly) — Everything you need for PatternFly development — React components, design guidance, migration, and MCP docs
-- [pf-assist](#pf-assist) — PatternFly skill routing — maps project signals to the right PF sub-skills for compliance, migration, and design audits
 - [uxd-assist](#uxd-assist) — UXD skill routing — discover the right skills for research, design review, and prototyping workflows
 - [uxd-design](#uxd-design) — UX design workflow — Figma context, design evaluation, and implementation handoff
 - [uxd-prototype](#uxd-prototype) — Create UX prototypes from Jira tickets, Figma designs, or feature descriptions
 - [uxd-research](#uxd-research) — UX research pipeline — heuristic evaluation, usability testing, research methodology
 - [uxd-workshop](#uxd-workshop) — UXD skill incubator — new skills start here before graduating to consumer plugins
 - [pf-a11y](#pf-a11y) — Accessibility auditing, reporting, and documentation
+- [pf-assist](#pf-assist) — PatternFly skill routing — maps project signals to the right PF sub-skills for compliance, migration, and design audits
 - [pf-code-review](#pf-code-review) — Code review and quality — adversarial review, security patterns
 - [pf-design-audit](#pf-design-audit) — Design audit — validate existing code and designs against PatternFly standards
 - [pf-design-guide](#pf-design-guide) — Design guide — component selection, interaction patterns, AI experience patterns, Figma design creation
@@ -27,18 +27,6 @@ Quick reference of all plugins and what they contain. This file is auto-generate
 Everything you need for PatternFly development — React components, design guidance, migration, and MCP docs
 
 No skills or agents yet.
-
-
-<br>
-
-### pf-assist
-
-PatternFly skill routing — maps project signals to the right PF sub-skills for compliance, migration, and design audits
-
-<table>
-<tr><th>Agent</th><th>Description</th><th>Eval</th></tr>
-<tr><td nowrap><code>pf-assist</code></td><td>PatternFly skill routing — maps project signals to the right PF sub-skills.</td><td>stable</td></tr>
-</table>
 
 
 <br>
@@ -123,6 +111,18 @@ Accessibility auditing, reporting, and documentation
 <tr><td nowrap><code>pf-a11y-audit</code></td><td>Audit PatternFly components and pages against WCAG and ARIA best practices.</td><td>stable</td></tr>
 <tr><td nowrap><code>pf-a11y-keyboard</code></td><td>Test keyboard accessibility of PatternFly UIs via live browser interaction.</td><td>stable</td></tr>
 <tr><td nowrap><code>pf-a11y-test-gen</code></td><td>Generate accessibility test files for any frontend framework covering ARIA attributes, keyboard interaction, and focus management.</td><td>stable</td></tr>
+</table>
+
+
+<br>
+
+### pf-assist
+
+PatternFly skill routing — maps project signals to the right PF sub-skills for compliance, migration, and design audits
+
+<table>
+<tr><th>Agent</th><th>Description</th><th>Eval</th></tr>
+<tr><td nowrap><code>pf-assist</code></td><td>PatternFly skill routing — maps project signals to the right PF sub-skills.</td><td>stable</td></tr>
 </table>
 
 
