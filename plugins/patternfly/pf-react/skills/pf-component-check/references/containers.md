@@ -219,9 +219,9 @@ DrawerPanelContent (passed as prop)
 
 ### Critical pattern and anti-patterns
 
-`panelContent` is a **prop** on `DrawerContent`, not a child. Main column content belongs in **`DrawerContentBody`**.
+`panelContent` is a **prop** on `DrawerContent`, not a child. Main column content belongs in **`DrawerContentBody`** (optional when the `Drawer` uses `isViewport`).
 
-#### Anti-pattern: panel as child, main column without DrawerContentBody
+#### Anti-pattern: panel as child, main column without DrawerContentBody (non-isViewport)
 
 ```tsx
 // Wrong — panel nested as child; main area not wrapped

@@ -27,7 +27,9 @@ dataset:
     Each case directory IS the workspace (cwd for claude --print).
     Fixture files (package.json) go directly in the case dir.
     - input.yaml: prompt field with a realistic user request
-    - annotations.yaml: expect_rhds (true/false), pattern type, and conditional flags
+    - annotations.yaml: ALL of the following keys are required in every case:
+        expect_rhds (bool), expect_decline (bool), rhds_only (bool), pf_old (bool),
+        pattern (string), has_header (bool), has_footer (bool)
     - package.json: fixture reflecting the case's dependency profile (PF+RHDS, PF-only, or RHDS-only)
 
 outputs:
@@ -44,6 +46,15 @@ traces:
   metrics: true
 
 judges:
+  - name: annotations_complete
+    description: Every case declares all required annotation keys so gate judges cannot be silently skipped
+    check: |
+      required = ['expect_rhds', 'expect_decline', 'rhds_only', 'pf_old', 'pattern', 'has_header', 'has_footer']
+      missing = [k for k in required if k not in annotations]
+      if missing:
+          return False, f"Missing required annotation keys: {', '.join(missing)}"
+      return True, "All required annotation keys present"
+
   - name: uses_page_header_wrapper
     description: Uses PageHeader wrapper component (not Masthead or bare element) for RHDS header
     if: "annotations.get('has_header') == True"
@@ -196,9 +207,31 @@ judges:
       pf_layout = re.search(r'(<Page[\s>]|<PageSection|<Masthead|<PageHeader)', text)
       if pf_layout:
           return False, f"Generated PF layout for a project without PatternFly: {pf_layout.group()}"
-      return True, "Declined for RHDS-only project"
+      if not re.search(r'@patternfly/react-core', text):
+          return False, "Did not mention that @patternfly/react-core is required"
+      return True, "Declined and explained @patternfly/react-core is required"
+
+  - name: gate_pf_old
+    description: Declines and recommends upgrade when PF is below 6.7.0
+    if: "annotations.get('pf_old', False) == True"
+    check: |
+      import re
+      text = outputs.get("conversation", "")
+      for path, content in outputs.get("files", {}).items():
+          if not isinstance(content, str):
+              continue
+          text += "\n" + content
+      new_api = re.search(r'(<PageHeader[\s>/]|<PageFooter[\s>/]|isPlain|isViewport)', text)
+      if new_api:
+          return False, f"Emitted 6.7.0-only API ({new_api.group()}) for a project on an older PF version"
+      upgrade_mention = re.search(r'6\.7\.0|upgrade', text, re.IGNORECASE)
+      if not upgrade_mention:
+          return False, "Did not mention upgrading to 6.7.0 or later"
+      return True, "Declined and recommended PF upgrade to 6.7.0+"
 
 thresholds:
+  annotations_complete:
+    min_pass_rate: 1.0
   uses_page_header_wrapper:
     min_pass_rate: 1.0
   uses_page_footer_wrapper:
@@ -206,7 +239,7 @@ thresholds:
   correct_masthead_prop:
     min_pass_rate: 1.0
   rhds_typed_imports:
-    min_pass_rate: 0.67
+    min_pass_rate: 1.0
   rhds_ts_safe:
     min_pass_rate: 1.0
   uses_is_plain:
@@ -214,6 +247,8 @@ thresholds:
   uses_is_viewport:
     min_pass_rate: 1.0
   gate_pf_only:
+    min_pass_rate: 1.0
+  gate_pf_old:
     min_pass_rate: 1.0
   gate_rhds_only:
     min_pass_rate: 1.0
