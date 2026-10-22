@@ -1,0 +1,6 @@
+expect_rhds: false
+expect_decline: true
+rhds_only: true
+pattern: none
+has_header: false
+has_footer: false

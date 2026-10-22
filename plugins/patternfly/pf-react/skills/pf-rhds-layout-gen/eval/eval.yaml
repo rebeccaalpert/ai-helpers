@@ -23,9 +23,11 @@ permissions:
 dataset:
   path: cases
   schema: |
-    Each case directory contains:
+    Each case directory IS the workspace (cwd for claude --print).
+    Fixture files (package.json) go directly in the case dir.
     - input.yaml: prompt field with a realistic user request
     - annotations.yaml: expect_rhds (true/false), pattern type, and conditional flags
+    - package.json: fixture reflecting the case's dependency profile (PF+RHDS, PF-only, or RHDS-only)
 
 outputs:
   - path: artifacts
@@ -149,9 +151,9 @@ judges:
           return False, "Missing isViewport prop on Drawer for full-height layout"
       return True, "Uses isViewport prop on Drawer"
 
-  - name: gate_no_rhds
-    description: Declines and redirects to pf-project-gen when project has no RHDS packages
-    if: "annotations.get('expect_rhds') == False"
+  - name: gate_pf_only
+    description: Declines and redirects to pf-project-gen when project has PF but no RHDS
+    if: "annotations.get('expect_decline') == True and annotations.get('rhds_only', False) == False"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -168,6 +170,23 @@ judges:
           return False, "Did not redirect the user to pf-project-gen for standard PF layouts"
       return True, "Declined and redirected to pf-project-gen"
 
+  - name: gate_rhds_only
+    description: Declines when project has RHDS but no PatternFly
+    if: "annotations.get('rhds_only', False) == True"
+    check: |
+      import re
+      text = outputs.get("conversation", "")
+      for path, content in outputs.get("files", {}).items():
+          if path.startswith("_modified/"):
+              continue
+          if not isinstance(content, str):
+              continue
+          text += "\n" + content
+      pf_layout = re.search(r'(<Page[\s>]|<PageSection|<Masthead|<PageHeader)', text)
+      if pf_layout:
+          return False, f"Generated PF layout for a project without PatternFly: {pf_layout.group()}"
+      return True, "Declined for RHDS-only project"
+
 thresholds:
   uses_page_header_wrapper:
     min_pass_rate: 1.0
@@ -183,5 +202,7 @@ thresholds:
     min_pass_rate: 1.0
   uses_is_viewport:
     min_pass_rate: 1.0
-  gate_no_rhds:
+  gate_pf_only:
+    min_pass_rate: 1.0
+  gate_rhds_only:
     min_pass_rate: 1.0
