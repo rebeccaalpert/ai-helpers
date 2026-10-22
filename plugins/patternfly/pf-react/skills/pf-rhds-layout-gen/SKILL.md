@@ -1,46 +1,41 @@
 ---
 name: pf-rhds-layout-gen
-description: >
-  Generate layout code for embedding RHDS header and footer web components inside a PatternFly Page. Use when building a mixed PF+RHDS app shell, setting up a plain page layout, or adding full-height scrollable drawers with React.
+description: Generate layout code for embedding RHDS header and footer web components inside a PatternFly Page. Use when building a mixed PF+RHDS app shell, setting up a plain page layout, or adding full-height scrollable drawers with React.
 ---
 
 # PF + RHDS Layout Setup
 
 Generate the layout scaffolding for a PatternFly page that uses Red Hat Design System (RHDS) web components for the header and/or footer. This pattern was established by the Red Hat Hardened Images team and is now supported natively in PatternFly Core and React.
 
-## When to use
+## Input
 
-- A project needs an RHDS `<rh-navigation-primary>` header or `<rh-footer>` inside a PatternFly `Page`
-- Someone asks how to build a "plain page" layout
-- Someone asks how to mimic Hummingbird or Red Hat Hardened Images layout with React
-- A drawer needs to span the full viewport height, positioned after content
+The user provides one of:
+- A request for an RHDS `<rh-navigation-primary>` header or `<rh-footer>` inside a PatternFly `Page`
+- A request to build a "plain page" layout
+- A request to mimic Hummingbird or Red Hat Hardened Images layout with React
+- A drawer that needs to span the full viewport height, positioned after content
 - Any mixed PF+RHDS app shell setup
 
-## Gate check
+## Context Detection
 
 Read `package.json`. This skill requires both `@patternfly/react-core` (6.x+) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only RHDS is present, this skill does not apply.
 
 If only PF is present (no RHDS packages): generate a standard PF `Page` layout using `Masthead`, `PageSidebar`, and `PageSection`. Do not use or mention any RHDS component names, element tag names, or RHDS package names anywhere in your response — not in code, not in imports, not in explanatory notes or suggestions. The user's project cannot use those components, so referencing them adds confusion.
 
-## What to generate
+## How to Generate
 
-### Step 1 — Detect what the user needs
+1. Detect what the user needs — ask or infer from context:
 
-Ask or infer from context:
+   | Signal | Layout |
+   |--------|--------|
+   | "RHDS header" or `rh-navigation-primary` mentioned | Custom header wrapper |
+   | "RHDS footer" or `rh-footer` mentioned | Custom footer wrapper |
+   | "plain page" or "no PF chrome" | Plain page layout |
+   | "full-height drawer" or "drawer after content" | Full-height scrollable drawer |
+   | Multiple signals | Combine patterns |
 
-| Signal | Layout |
-|--------|--------|
-| "RHDS header" or `rh-navigation-primary` mentioned | Custom header wrapper |
-| "RHDS footer" or `rh-footer` mentioned | Custom footer wrapper |
-| "plain page" or "no PF chrome" | Plain page layout |
-| "full-height drawer" or "drawer after content" | Full-height scrollable drawer |
-| Multiple signals | Combine patterns |
-
-### Step 2 — Generate the layout
-
-Output a complete, runnable component. Follow the patterns below exactly.
-
----
+2. Look up PatternFly layout components via MCP to confirm current prop signatures.
+3. Generate the layout using the structure and rules below.
 
 ## Pattern A — Custom RHDS header in a PatternFly Page
 
@@ -75,8 +70,6 @@ function AppLayout({ children }) {
 }
 ```
 
----
-
 ## Pattern B — Custom RHDS footer in a PatternFly Page
 
 ### What it does
@@ -107,12 +100,6 @@ function AppLayout({ children }) {
   );
 }
 ```
-
-### Theme note
-
-`<rh-footer>` always renders in dark theme regardless of the page theme. This is by design — Red Hat design guidance recommends the footer stays dark. No theme synchronization is needed for this component.
-
----
 
 ## Pattern C — Plain page layout
 
@@ -156,8 +143,6 @@ function PlainLayout({ children }) {
 
 No sidebar prop, no `Masthead`, no `PageToggleButton`. The PF `Page` handles scroll management and section layout; RHDS handles the shell chrome.
 
----
-
 ## Pattern D — Full-height scrollable drawer
 
 ### What it does
@@ -198,8 +183,6 @@ function LayoutWithDrawer({ children, drawerContent, isDrawerOpen }) {
 
 The `isViewport` prop makes the drawer span the viewport.
 
----
-
 ## Combining patterns
 
 When the user needs multiple patterns, compose them. A typical Red Hat Hardened Images–style layout combines all of these patterns.
@@ -217,11 +200,11 @@ When the user needs multiple patterns, compose them. A typical Red Hat Hardened 
 </>
 ```
 
-## Output rules
+## Rules
 
-1. Output a single, runnable component file
-2. Include all necessary imports (PF React and RHDS element side-effect imports)
-3. Note any CSS overrides needed as a separate CSS block with comments
-4. If the project uses TypeScript, output `.tsx` with proper typing
-5. Do not add unrelated PF components — generate only the layout shell the user asked for
-6. Only create or modify the top-level layout file (e.g., `App.tsx`). Treat existing component files (headers, footers, drawers, etc.) as opaque — import and compose them as-is without editing their internals or markup
+- Do not add unrelated PF components — generate only the layout shell the user asked for
+- Only create or modify the top-level layout file (e.g., `App.tsx`). Treat existing component files (headers, footers, drawers, etc.) as opaque — import and compose them as-is without editing their internals or markup
+
+## Output
+
+Output a single, runnable component file. Include all necessary imports (PF React and RHDS element side-effect imports). Note any CSS overrides needed as a separate CSS block with comments. If the project uses TypeScript, output `.tsx` with proper typing.
