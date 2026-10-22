@@ -18,7 +18,7 @@ The user provides one of:
 
 ## Context Detection
 
-Read `package.json`. This skill requires both `@patternfly/react-core` (6.x+) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only RHDS is present, this skill does not apply.
+Read `package.json`. This skill requires `@patternfly/react-core` 6.7.0+ (which introduced `PageHeader`, `PageFooter`, `isPlain`, and `isViewport`) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only RHDS is present, this skill does not apply.
 
 If only PF is present (no RHDS packages): this skill does not apply. Decline and tell the user to use `pf-project-gen` for standard PatternFly page layouts with `Masthead`, `PageSidebar`, and `PageSection`. Do not generate any layout code or mention any RHDS component names, element tag names, or RHDS package names.
 
