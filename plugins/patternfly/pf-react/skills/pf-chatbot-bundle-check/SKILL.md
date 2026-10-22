@@ -50,7 +50,7 @@ The `MarkdownContent` component lazy-loads its markdown parser (`react-markdown`
 Search only TypeScript and JavaScript source files — CSS/SCSS files are checked separately in Step 6 and do not count toward the "Scanned" total.
 
 ```bash
-rg "@patternfly/chatbot" -t ts -t tsx -t js -t jsx -l
+rg "@patternfly/chatbot" -t ts -t js -l
 ```
 
 The number of files this returns is the **Scanned** count for the report header.
@@ -58,8 +58,8 @@ The number of files this returns is the **Scanned** count for the report header.
 Then classify each import:
 
 ```bash
-rg "from ['\"]@patternfly/chatbot['\"]" -t ts -t tsx
-rg "from ['\"]@patternfly/chatbot/" -t ts -t tsx
+rg "from ['\"]@patternfly/chatbot['\"]" -t ts -t js
+rg "from ['\"]@patternfly/chatbot/" -t ts -t js
 ```
 
 ### Step 2 — Flag barrel-excluded components
@@ -76,7 +76,7 @@ These four modules are **not exported from the root barrel**. Any import of them
 These were removed from the barrel because they pull in Monaco Editor and other heavy dependencies. Search for them:
 
 ```bash
-rg "import.*\b(CodeModal|PreviewAttachment|AttachmentEdit|getTrackingProviders)\b.*from ['\"]@patternfly/chatbot['\"]" -t ts -t tsx
+rg "import.*\b(CodeModal|PreviewAttachment|AttachmentEdit|getTrackingProviders)\b.*from ['\"]@patternfly/chatbot['\"]" -t ts -t js
 ```
 
 Note that `CodeModal`, `PreviewAttachment`, and `AttachmentEdit` use **default exports** from their dynamic paths — not named exports.
@@ -86,7 +86,7 @@ Note that `CodeModal`, `PreviewAttachment`, and `AttachmentEdit` use **default e
 Wildcard imports defeat tree-shaking:
 
 ```bash
-rg "import \* as .* from ['\"]@patternfly/chatbot" -t ts -t tsx
+rg "import \* as .* from ['\"]@patternfly/chatbot" -t ts -t js
 ```
 
 ```tsx
@@ -105,7 +105,7 @@ import ChatbotToggle from '@patternfly/chatbot/dist/dynamic/ChatbotToggle';
 If the project uses `CodeModal`, `PreviewAttachment`, or `AttachmentEdit`, it must import the Monaco worker helper **once at application startup** before any of those components render:
 
 ```bash
-rg "monaco-environment" -t ts -t tsx -l
+rg "monaco-environment" -t ts -t js -l
 ```
 
 If no import is found but barrel-excluded Monaco components are used, flag it:
@@ -126,7 +126,7 @@ Also verify that `monaco-editor` and `@monaco-editor/react` are listed as depend
 For chatbots that display messages on first render (e.g., a welcome message or conversation history), check whether the markdown chunk could be preloaded earlier:
 
 ```bash
-rg "preloadMarkdownRenderer" -t ts -t tsx
+rg "preloadMarkdownRenderer" -t ts -t js
 ```
 
 If messages appear immediately on mount and there's a visible flash before markdown renders, suggest preloading in the app entry point or route loader:
@@ -143,7 +143,7 @@ This is optional — `MessageBox` already handles it. Only suggest it when there
 ChatBot styles are side-effectful and must be imported explicitly:
 
 ```bash
-rg "chatbot/dist/css/main.css" -t ts -t tsx -t css
+rg "chatbot/dist/css/main.css" -t ts -t js -t css
 ```
 
 If missing, flag it. If present, verify it appears **after** PatternFly CSS imports so ChatBot overrides apply correctly.
