@@ -128,7 +128,7 @@ judges:
       return True, "Uses isViewport prop on Drawer"
 
   - name: gate_no_rhds
-    description: Does not generate RHDS patterns when project has no RHDS packages
+    description: Declines and redirects to pf-project-gen when project has no RHDS packages
     if: "annotations.get('expect_rhds') == False"
     check: |
       import re
@@ -142,7 +142,9 @@ judges:
       rhds_ref = re.search(r'(rh-navigation-primary|rh-footer|@rhds/|PageHeader|PageFooter)', text)
       if rhds_ref:
           return False, f"Generated RHDS patterns for a project without RHDS packages: {rhds_ref.group()}"
-      return True, "Did not generate RHDS patterns for PF-only project"
+      if not re.search(r'pf-project-gen', text):
+          return False, "Did not redirect the user to pf-project-gen for standard PF layouts"
+      return True, "Declined and redirected to pf-project-gen"
 
 thresholds:
   uses_page_header_wrapper:

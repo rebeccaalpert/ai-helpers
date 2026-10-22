@@ -1,4 +1,5 @@
 expect_rhds: false
+expect_decline: true
 pattern: standard
 has_header: false
 has_footer: false
