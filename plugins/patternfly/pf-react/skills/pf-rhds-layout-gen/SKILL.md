@@ -43,20 +43,20 @@ PatternFly's `Page` component accepts a custom header wrapper so you can replace
 
 ### What it does
 
-Wrapping `<rh-navigation-primary>` in a `<PageHeader>` element and passing it to the `masthead` prop places the RHDS navigation at the top of the PF page shell while preserving PF's layout grid (sidebar, main content, sections).
+Wrapping the RHDS `NavigationPrimary` React component in a `<PageHeader>` element and passing it to the `masthead` prop places the RHDS navigation at the top of the PF page shell while preserving PF's layout grid (sidebar, main content, sections).
 
 ### Example
 
 ```tsx
 import { Page, PageHeader, PageSection } from "@patternfly/react-core";
-import "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
+import { NavigationPrimary } from "@rhds/elements/react/rh-navigation-primary/rh-navigation-primary.js";
 
 function AppLayout({ children }) {
   const rhdsHeader = (
     <PageHeader>
-      <rh-navigation-primary>
+      <NavigationPrimary>
         {/* RHDS nav slots go here */}
-      </rh-navigation-primary>
+      </NavigationPrimary>
     </PageHeader>
   );
 
@@ -74,20 +74,20 @@ function AppLayout({ children }) {
 
 ### What it does
 
-The `footer` prop on `<Page>` accepts a custom footer element. Wrapping `<rh-footer>` and passing it places the RHDS footer at the bottom of the PF page, below all `PageSection` content.
+The `footer` prop on `<Page>` accepts a custom footer element. Wrapping the RHDS `Footer` React component in a `<PageFooter>` and passing it places the RHDS footer at the bottom of the PF page, below all `PageSection` content.
 
 ### Example
 
 ```tsx
-import { Page, PageFooter, PageSection } from '@patternfly/react-core';
-import "@rhds/elements/rh-footer/rh-footer.js";
+import { Page, PageFooter, PageSection } from "@patternfly/react-core";
+import { Footer } from "@rhds/elements/react/rh-footer/rh-footer.js";
 
 function AppLayout({ children }) {
   const rhdsFooter = (
     <PageFooter>
-      <rh-footer>
+      <Footer>
         {/* RHDS footer slots go here */}
-      </rh-footer>
+      </Footer>
     </PageFooter>
   );
 
@@ -110,24 +110,24 @@ A "plain page" removes PatternFly's sidebar and default chrome. The page is a ba
 ### Example
 
 ```tsx
-import { Page, PageFooter, PageHeader, PageSection } from '@patternfly/react-core';
-import "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
-import "@rhds/elements/rh-footer/rh-footer.js";
+import { Page, PageFooter, PageHeader, PageSection } from "@patternfly/react-core";
+import { NavigationPrimary } from "@rhds/elements/react/rh-navigation-primary/rh-navigation-primary.js";
+import { Footer } from "@rhds/elements/react/rh-footer/rh-footer.js";
 
 function PlainLayout({ children }) {
   const rhdsHeader = (
     <PageHeader>
-      <rh-navigation-primary>
+      <NavigationPrimary>
         {/* nav content */}
-      </rh-navigation-primary>
+      </NavigationPrimary>
     </PageHeader>
   );
 
   const rhdsFooter = (
     <PageFooter>
-      <rh-footer>
+      <Footer>
         {/* footer content */}
-      </rh-footer>
+      </Footer>
     </PageFooter>
   );
 
@@ -203,9 +203,29 @@ When the user needs multiple patterns, compose them. A typical Red Hat Hardened 
 
 ## Rules
 
+- **Prefer React wrappers** — import RHDS components from `@rhds/elements/react/` (e.g. `NavigationPrimary`, `Footer`). These are typed React wrappers built with `@lit/react` and work in `.tsx` files without additional configuration
+- **Bare custom element tags require type declarations** — if the project already uses bare `<rh-navigation-primary>` or `<rh-footer>` tags, or the user explicitly asks for them, they are valid but require a JSX type augmentation to compile in TypeScript. RHDS augments `HTMLElementTagNameMap` but not `JSX.IntrinsicElements`, so emit a `declare global` block alongside the component:
+
+```tsx
+// rhds.d.ts
+import type { RhNavigationPrimary } from "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
+import type { RhFooter } from "@rhds/elements/rh-footer/rh-footer.js";
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      "rh-navigation-primary": React.DetailedHTMLProps<React.HTMLAttributes<RhNavigationPrimary>, RhNavigationPrimary>;
+      "rh-footer": React.DetailedHTMLProps<React.HTMLAttributes<RhFooter>, RhFooter>;
+    }
+  }
+}
+```
+
+Place this in a project-level `rhds.d.ts` file included by `tsconfig.json`. Without it, TypeScript will error on the bare tags. Only include the elements actually used.
+
 - Do not add unrelated PF components — generate only the layout shell the user asked for
 - Only create or modify the top-level layout file (e.g., `App.tsx`). Treat existing component files (headers, footers, drawers, etc.) as opaque — import and compose them as-is without editing their internals or markup
 
 ## Output
 
-Output a single, runnable component file. Include all necessary imports (PF React and RHDS element side-effect imports). Note any CSS overrides needed as a separate CSS block with comments. If the project uses TypeScript, output `.tsx` with proper typing.
+Output a single, runnable component file. Include all necessary imports (PF React components and either RHDS React wrappers from `@rhds/elements/react/` or bare element side-effect imports with the `declare global` type block). Note any CSS overrides needed as a separate CSS block with comments. If the project uses TypeScript, output `.tsx` with proper typing.

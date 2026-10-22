@@ -1,5 +1,5 @@
 name: pf-rhds-layout-gen-eval
-description: Evaluate pf-rhds-layout-gen's PF+RHDS layout scaffolding — PageHeader/PageFooter wrappers, masthead prop, isPlain, isViewport, and RHDS side-effect imports
+description: Evaluate pf-rhds-layout-gen's PF+RHDS layout scaffolding — PageHeader/PageFooter wrappers, masthead prop, isPlain, isViewport, and RHDS React wrapper imports
 skill: pf-react:pf-rhds-layout-gen
 
 execution:
@@ -32,7 +32,7 @@ outputs:
     schema: |
       The skill produces a React layout component. Judges check conversation
       text and file artifacts for PF6 wrapper components, correct prop names,
-      RHDS side-effect imports, and layout-specific props.
+      RHDS React wrapper imports, and layout-specific props.
 
 traces:
   stdout: true
@@ -84,24 +84,46 @@ judges:
           return False, "Missing masthead prop on Page for custom header"
       return True, "Correctly uses masthead prop on Page"
 
-  - name: rhds_side_effect_imports
-    description: Includes RHDS element side-effect imports (not bare @rhds/elements)
+  - name: rhds_typed_imports
+    description: Imports RHDS components with TypeScript-safe approach (React wrappers or side-effect imports with type declarations)
     if: "annotations.get('expect_rhds') == True"
     check: |
       import re
       text = outputs.get("conversation", "")
       for path, content in outputs.get("files", {}).items():
           text += "\n" + content
-      specific_import = re.search(
+      react_import = re.search(
+          r"import\s+\{[^}]+\}\s+from\s+['\"]@rhds/elements/react/rh-[\w-]+/rh-[\w-]+\.js['\"]",
+          text,
+      )
+      if react_import:
+          return True, "Imports RHDS components from @rhds/elements/react/"
+      side_effect = re.search(
           r"import\s+['\"]@rhds/elements/rh-[\w-]+/rh-[\w-]+\.js['\"]",
           text,
       )
-      if not specific_import:
-          bare_import = re.search(r"import\s+['\"]@rhds/elements['\"]", text)
-          if bare_import:
-              return False, "Uses bare @rhds/elements import instead of specific element side-effect import"
-          return False, "Missing RHDS element side-effect import"
-      return True, "Includes specific RHDS element side-effect imports"
+      if side_effect:
+          has_type_decl = re.search(r'IntrinsicElements', text)
+          if has_type_decl:
+              return True, "Uses side-effect imports with JSX.IntrinsicElements type declaration"
+          return False, "Uses side-effect import without JSX.IntrinsicElements type declaration — will fail TypeScript"
+      return False, "Missing RHDS import (expected React wrapper or side-effect import with type declaration)"
+
+  - name: rhds_ts_safe
+    description: Bare custom element tags in JSX have a matching IntrinsicElements declaration
+    if: "annotations.get('expect_rhds') == True"
+    check: |
+      import re
+      text = outputs.get("conversation", "")
+      for path, content in outputs.get("files", {}).items():
+          text += "\n" + content
+      bare_tag = re.search(r'<(rh-navigation-primary|rh-footer)[\s>]', text)
+      if not bare_tag:
+          return True, "Uses React wrapper components — no bare tags to type"
+      has_type_decl = re.search(r'IntrinsicElements', text)
+      if not has_type_decl:
+          return False, f"Uses bare <{bare_tag.group(1)}> tag without IntrinsicElements declaration — will fail TypeScript"
+      return True, "Bare custom element tags have IntrinsicElements type declaration"
 
   - name: uses_is_plain
     description: Uses isPlain prop on Page for chrome-free plain page layout
@@ -139,7 +161,7 @@ judges:
           if not isinstance(content, str):
               continue
           text += "\n" + content
-      rhds_ref = re.search(r'(rh-navigation-primary|rh-footer|@rhds/|PageHeader|PageFooter)', text)
+      rhds_ref = re.search(r'(rh-navigation-primary|rh-footer|@rhds/|PageHeader|PageFooter|NavigationPrimary)', text)
       if rhds_ref:
           return False, f"Generated RHDS patterns for a project without RHDS packages: {rhds_ref.group()}"
       if not re.search(r'pf-project-gen', text):
@@ -153,8 +175,10 @@ thresholds:
     min_pass_rate: 1.0
   correct_masthead_prop:
     min_pass_rate: 1.0
-  rhds_side_effect_imports:
+  rhds_typed_imports:
     min_pass_rate: 0.67
+  rhds_ts_safe:
+    min_pass_rate: 1.0
   uses_is_plain:
     min_pass_rate: 1.0
   uses_is_viewport:
