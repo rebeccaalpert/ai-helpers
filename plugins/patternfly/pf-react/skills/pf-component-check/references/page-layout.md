@@ -11,6 +11,8 @@ Detailed reference for Page, PageSection, PageGroup, PageSidebar, and Masthead.
 - [PageSidebar](#pagesidebar)
 - [PageSidebarBody](#pagesidebarbody)
 - [PageToggleButton](#pagetogglebutton)
+- [PageHeader](#pageheader)
+- [PageFooter](#pagefooter)
 - [Masthead](#masthead)
 
 ## Page
@@ -22,16 +24,18 @@ Root container that manages layout, sidebar state, responsive breakpoints, and c
 **Key props:**
 | Prop | Type | Purpose |
 |------|------|---------|
-| `masthead` | ReactNode | Masthead component (prop, not child) |
+| `masthead` | ReactNode | Masthead or PageHeader component (prop, not child) |
 | `sidebar` | ReactNode | PageSidebar component (prop, not child) |
+| `footer` | ReactNode | PageFooter component (prop, not child) |
 | `isManagedSidebar` | boolean | Auto-manage sidebar open/close on resize |
 | `isContentFilled` | boolean | Enable isFilled on PageSection children |
+| `isPlain` | boolean | Render without content area background and overflow scroll |
 | `defaultManagedSidebarIsOpen` | boolean | Initial sidebar state |
 | `onPageResize` | function | Callback on page resize |
 
 **Context provided:** `PageContext` with `isManagedSidebar`, `isNavOpen`, `onNavToggle`, `width`, `height`, `getBreakpoint`
 
-**Layout structure:** Page creates a CSS grid with areas for masthead, sidebar, and main content container. The main content container wraps all direct children.
+**Layout structure:** Page creates a CSS grid with areas for masthead, sidebar, main content container, and footer. The main content container wraps all direct children.
 
 ### Anti-pattern: main content without PageSection
 
@@ -179,6 +183,48 @@ Sidebar toggle button. **Goes in Masthead, not in Page.**
   <MastheadContent>Right content</MastheadContent>
 </Masthead>
 ```
+
+## PageHeader
+
+Custom header wrapper for non-Masthead content. Use when embedding external header components (e.g. RHDS `NavigationPrimary`) in a PatternFly Page.
+
+**Renders:** `<header class="pf-v6-c-page__header">`
+
+**Key props:**
+| Prop | Type | Purpose |
+|------|------|---------|
+| `component` | keyof JSX.IntrinsicElements | Base element to render (defaults to `header`) |
+
+**Usage:** Pass via the `masthead` prop on `Page`, not as a child.
+
+```tsx
+<Page masthead={<PageHeader><CustomNavComponent /></PageHeader>}>
+  <PageSection>{children}</PageSection>
+</Page>
+```
+
+**Added in:** `@patternfly/react-core` 6.7.0
+
+## PageFooter
+
+Custom footer wrapper. Use when embedding external footer components (e.g. RHDS `Footer`) in a PatternFly Page.
+
+**Renders:** `<footer class="pf-v6-c-page__footer">`
+
+**Key props:**
+| Prop | Type | Purpose |
+|------|------|---------|
+| `component` | keyof JSX.IntrinsicElements | Base element to render (defaults to `footer`) |
+
+**Usage:** Pass via the `footer` prop on `Page`, not as a child.
+
+```tsx
+<Page footer={<PageFooter><CustomFooterComponent /></PageFooter>}>
+  <PageSection>{children}</PageSection>
+</Page>
+```
+
+**Added in:** `@patternfly/react-core` 6.7.0
 
 ## Masthead
 

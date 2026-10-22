@@ -199,6 +199,7 @@ DrawerPanelContent (passed as prop)
 |------|---------|
 | `isExpanded` | Panel visibility |
 | `isInline` | Inline mode (no overlay) |
+| `isViewport` | Fixed to fill the viewport (place after Page as a sibling) |
 | `position` | 'start' \| 'end' \| 'bottom' |
 | `onExpand` | Callback when panel expands |
 
