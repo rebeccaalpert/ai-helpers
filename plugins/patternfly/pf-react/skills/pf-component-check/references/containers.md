@@ -181,7 +181,7 @@ Skipping **`ModalHeader`**, **`ModalBody`**, or **`ModalFooter`** breaks the int
 ```
 Drawer (context provider)
 └── DrawerContent panelContent={<DrawerPanelContent />}
-    └── DrawerContentBody (main content, provides padding)
+    └── DrawerContentBody (main content, provides padding — optional with isViewport)
 
 DrawerPanelContent (passed as prop)
 ├── DrawerHead (panel header)
