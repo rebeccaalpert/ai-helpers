@@ -1,5 +1,5 @@
 ---
-name: pf-rhds-theme-guide
+name: pf-rhds-theme-audit
 description: Audit and fix theme synchronization between PatternFly React and Red Hat Design System web components, then generate a usage guide. Use when a project mixes PF and RHDS and needs theme setup or has theme sync issues.
 ---
 
