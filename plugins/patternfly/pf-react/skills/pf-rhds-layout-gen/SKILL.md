@@ -1,5 +1,5 @@
 ---
-name: pf-rhds-layout-setup-react
+name: pf-rhds-layout-gen
 description: >
   Generate layout code for embedding RHDS header and footer web components inside a PatternFly Page. Use when building a mixed PF+RHDS app shell, setting up a plain page layout, or adding full-height scrollable drawers with React.
 ---
@@ -53,8 +53,8 @@ Wrapping `<rh-navigation-primary>` in a `<PageHeader>` element and passing it to
 ### Example
 
 ```tsx
-import { Page, PageHeader, PageSection } from '@patternfly/react-core';
-import '@rhds/elements/rh-navigation-primary/rh-navigation-primary.js';
+import { Page, PageHeader, PageSection } from "@patternfly/react-core";
+import "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
 
 function AppLayout({ children }) {
   const rhdsHeader = (
@@ -87,7 +87,7 @@ The `footer` prop on `<Page>` accepts a custom footer element. Wrapping `<rh-foo
 
 ```tsx
 import { Page, PageFooter, PageSection } from '@patternfly/react-core';
-import '@rhds/elements/rh-footer/rh-footer.js';
+import "@rhds/elements/rh-footer/rh-footer.js";
 
 function AppLayout({ children }) {
   const rhdsFooter = (
@@ -124,8 +124,8 @@ A "plain page" removes PatternFly's sidebar and default chrome. The page is a ba
 
 ```tsx
 import { Page, PageFooter, PageHeader, PageSection } from '@patternfly/react-core';
-import '@rhds/elements/rh-navigation-primary/rh-navigation-primary.js';
-import '@rhds/elements/rh-footer/rh-footer.js';
+import "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
+import "@rhds/elements/rh-footer/rh-footer.js";
 
 function PlainLayout({ children }) {
   const rhdsHeader = (
@@ -174,7 +174,7 @@ import {
   DrawerPanelContent,
   Page,
   PageSection,
-} from '@patternfly/react-core';
+} from "@patternfly/react-core";
 
 function LayoutWithDrawer({ children, drawerContent, isDrawerOpen }) {
   const panelContent = (

@@ -1,6 +1,6 @@
-name: pf-rhds-layout-setup-react-eval
-description: Evaluate pf-rhds-layout-setup-react's PF+RHDS layout scaffolding — PageHeader/PageFooter wrappers, masthead prop, isPlain, isViewport, and RHDS side-effect imports
-skill: pf-react:pf-rhds-layout-setup-react
+name: pf-rhds-layout-gen-eval
+description: Evaluate pf-rhds-layout-gen's PF+RHDS layout scaffolding — PageHeader/PageFooter wrappers, masthead prop, isPlain, isViewport, and RHDS side-effect imports
+skill: pf-react:pf-rhds-layout-gen
 
 execution:
   mode: case
