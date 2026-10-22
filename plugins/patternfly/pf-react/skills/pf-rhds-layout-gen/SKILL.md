@@ -20,7 +20,7 @@ The user provides one of:
 
 Read `package.json`. This skill requires both `@patternfly/react-core` (6.x+) and at least one `@rhds/*` or `@red-hat-design-system/*` package. If only RHDS is present, this skill does not apply.
 
-If only PF is present (no RHDS packages): generate a standard PF `Page` layout using `Masthead`, `PageSidebar`, and `PageSection`. Do not use or mention any RHDS component names, element tag names, or RHDS package names anywhere in your response — not in code, not in imports, not in explanatory notes or suggestions. The user's project cannot use those components, so referencing them adds confusion.
+If only PF is present (no RHDS packages): this skill does not apply. Decline and tell the user to use `pf-project-gen` for standard PatternFly page layouts with `Masthead`, `PageSidebar`, and `PageSection`. Do not generate any layout code or mention any RHDS component names, element tag names, or RHDS package names.
 
 ## How to Generate
 
