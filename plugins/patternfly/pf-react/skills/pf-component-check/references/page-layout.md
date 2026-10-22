@@ -186,7 +186,7 @@ Sidebar toggle button. **Goes in Masthead, not in Page.**
 
 ## PageHeader
 
-Custom header wrapper for non-Masthead content. Use when embedding external header components (e.g. RHDS `NavigationPrimary`) in a PatternFly Page.
+Custom header wrapper for non-Masthead content. **Must be passed via the `masthead` prop on Page, not as a child.** Use when embedding external header components (e.g. RHDS `NavigationPrimary`) in a PatternFly Page. Available since `@patternfly/react-core` 6.7.0.
 
 **Renders:** `<header class="pf-v6-c-page__header">`
 
@@ -195,19 +195,15 @@ Custom header wrapper for non-Masthead content. Use when embedding external head
 |------|------|---------|
 | `component` | keyof JSX.IntrinsicElements | Base element to render (defaults to `header`) |
 
-**Usage:** Pass via the `masthead` prop on `Page`, not as a child.
-
 ```tsx
 <Page masthead={<PageHeader><CustomNavComponent /></PageHeader>}>
   <PageSection>{children}</PageSection>
 </Page>
 ```
 
-**Added in:** `@patternfly/react-core` 6.7.0
-
 ## PageFooter
 
-Custom footer wrapper. Use when embedding external footer components (e.g. RHDS `Footer`) in a PatternFly Page.
+Custom footer wrapper. **Must be passed via the `footer` prop on Page, not as a child.** Use when embedding external footer components (e.g. RHDS `Footer`) in a PatternFly Page. Available since `@patternfly/react-core` 6.7.0.
 
 **Renders:** `<footer class="pf-v6-c-page__footer">`
 
@@ -216,15 +212,11 @@ Custom footer wrapper. Use when embedding external footer components (e.g. RHDS 
 |------|------|---------|
 | `component` | keyof JSX.IntrinsicElements | Base element to render (defaults to `footer`) |
 
-**Usage:** Pass via the `footer` prop on `Page`, not as a child.
-
 ```tsx
 <Page footer={<PageFooter><CustomFooterComponent /></PageFooter>}>
   <PageSection>{children}</PageSection>
 </Page>
 ```
-
-**Added in:** `@patternfly/react-core` 6.7.0
 
 ## Masthead
 
