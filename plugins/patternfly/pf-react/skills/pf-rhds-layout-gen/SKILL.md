@@ -155,7 +155,6 @@ PatternFly's `Drawer` can be positioned after content and stretch to the full vi
 import {
   Drawer,
   DrawerContent,
-  DrawerContentBody,
   DrawerPanelContent,
   Page,
   PageSection,
@@ -169,14 +168,16 @@ function LayoutWithDrawer({ children, drawerContent, isDrawerOpen }) {
   );
 
   return (
-    <Page>
-      <PageSection>
-        {children}
-      </PageSection>
-    </Page>
-    <Drawer isExpanded={isDrawerOpen} isViewport>
-      <DrawerContent panelContent={panelContent} />
-    </Drawer>
+    <>
+      <Page>
+        <PageSection>
+          {children}
+        </PageSection>
+      </Page>
+      <Drawer isExpanded={isDrawerOpen} isViewport>
+        <DrawerContent panelContent={panelContent} />
+      </Drawer>
+    </>
   );
 }
 ```
