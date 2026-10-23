@@ -30,7 +30,7 @@ dataset:
     - annotations.yaml: ALL of the following keys are required in every case:
         expect_rhds (bool), expect_decline (bool), rhds_only (bool), pf_old (bool),
         pattern (string), has_header (bool), has_footer (bool)
-    - package.json: fixture reflecting the case's dependency profile (PF+RHDS, PF-only, or RHDS-only)
+    - package.json: fixture reflecting the case's dependency profile (PF 6.7+ with RHDS, PF 6.7+ only, PF below 6.7, or RHDS-only)
 
 outputs:
   - path: artifacts
@@ -47,13 +47,21 @@ traces:
 
 judges:
   - name: annotations_complete
-    description: Every case declares all required annotation keys so gate judges cannot be silently skipped
+    description: Every case declares all required annotation keys with correct types so gate judges cannot be silently skipped
     check: |
-      required = ['expect_rhds', 'expect_decline', 'rhds_only', 'pf_old', 'pattern', 'has_header', 'has_footer']
-      missing = [k for k in required if k not in annotations]
+      annots = outputs.get("annotations", {})
+      required_bools = ['expect_rhds', 'expect_decline', 'rhds_only', 'pf_old', 'has_header', 'has_footer']
+      required_strs = ['pattern']
+      missing = [k for k in required_bools + required_strs if k not in annots]
       if missing:
           return False, f"Missing required annotation keys: {', '.join(missing)}"
-      return True, "All required annotation keys present"
+      bad_type = [k for k in required_bools if not isinstance(annots[k], bool)]
+      if bad_type:
+          return False, f"Annotation keys must be bool: {', '.join(bad_type)}"
+      bad_str = [k for k in required_strs if not isinstance(annots[k], str)]
+      if bad_str:
+          return False, f"Annotation keys must be str: {', '.join(bad_str)}"
+      return True, "All required annotation keys present with correct types"
 
   - name: uses_page_header_wrapper
     description: Uses PageHeader wrapper component (not Masthead or bare element) for RHDS header
@@ -179,7 +187,7 @@ judges:
 
   - name: gate_pf_only
     description: Declines and redirects to pf-project-gen when project has PF but no RHDS
-    if: "annotations.get('expect_decline') == True and annotations.get('rhds_only', False) == False"
+    if: "annotations.get('expect_decline') == True and annotations.get('rhds_only', False) == False and annotations.get('pf_old', False) == False"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -221,7 +229,7 @@ judges:
           if not isinstance(content, str):
               continue
           text += "\n" + content
-      new_api = re.search(r'(<PageHeader[\s>/]|<PageFooter[\s>/]|isPlain|isViewport)', text)
+      new_api = re.search(r'(<PageHeader[\s>/]|<PageFooter[\s>/]|<Page[^>]*\bisPlain\b|<Drawer[^>]*\bisViewport\b)', text)
       if new_api:
           return False, f"Emitted 6.7.0-only API ({new_api.group()}) for a project on an older PF version"
       upgrade_mention = re.search(r'6\.7\.0|upgrade', text, re.IGNORECASE)
