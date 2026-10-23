@@ -1,6 +1,6 @@
 # Page Layout Components
 
-Detailed reference for Page, PageSection, PageGroup, PageSidebar, and Masthead.
+Detailed reference for Page, PageSection, PageGroup, PageSidebar, PageHeader, PageFooter, and Masthead.
 
 ## Table of Contents
 - [Page](#page)

@@ -26,7 +26,7 @@ except ImportError:
     print("pyyaml not installed — install with: pip install pyyaml", file=sys.stderr)
     sys.exit(1)
 
-BARE_ANNOTATIONS = re.compile(r'\bannotations\s*[\.\[\(]')
+BARE_ANNOTATIONS = re.compile(r'\bannotations\s*[\.\[\(]|\bnot\s+in\s+annotations\b')
 SKIP_DIRS = {"uxd-workshop", "pf-workshop"}
 
 

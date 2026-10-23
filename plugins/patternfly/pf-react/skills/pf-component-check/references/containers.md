@@ -181,7 +181,7 @@ Skipping **`ModalHeader`**, **`ModalBody`**, or **`ModalFooter`** breaks the int
 ```
 Drawer (context provider)
 └── DrawerContent panelContent={<DrawerPanelContent />}
-    └── DrawerContentBody (main content, provides padding — optional with isViewport)
+    └── DrawerContentBody (main content, provides padding — optional when DrawerContent has no children and the Drawer uses isViewport)
 
 DrawerPanelContent (passed as prop)
 ├── DrawerHead (panel header)
@@ -219,9 +219,9 @@ DrawerPanelContent (passed as prop)
 
 ### Critical pattern and anti-patterns
 
-`panelContent` is a **prop** on `DrawerContent`, not a child. Main column content belongs in **`DrawerContentBody`** (optional when the `Drawer` uses `isViewport`).
+`panelContent` is a **prop** on `DrawerContent`, not a child. Main column content belongs in **`DrawerContentBody`** (optional when `DrawerContent` has no children and the `Drawer` uses `isViewport`).
 
-#### Anti-pattern: panel as child, main column without DrawerContentBody (non-isViewport)
+#### Anti-pattern: panel as child, main column without DrawerContentBody
 
 ```tsx
 // Wrong — panel nested as child; main area not wrapped
