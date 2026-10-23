@@ -4,7 +4,7 @@ description: >
   Audit PatternFly ChatBot imports for tree-shaking opportunities. Use when optimizing ChatBot bundle size or after upgrading @patternfly/chatbot.
 ---
 
-# PF ChatBot Bundle Check
+# PF ChatBot Bundle Audit
 
 Scan a project's `@patternfly/chatbot` imports and flag patterns that inflate bundle size. Based on the tree-shaking work in [patternfly/chatbot#893](https://github.com/patternfly/chatbot/pull/893).
 
