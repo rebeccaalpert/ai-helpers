@@ -20,7 +20,7 @@ The user provides one of:
 
 ## Context Detection
 
-Read `package.json`. This skill requires `@patternfly/react-core` 6.7.0+ (which introduced `PageHeader`, `PageFooter`, `isPlain`, and `isViewport`).
+Read `package.json` to detect dependencies. This skill requires `@patternfly/react-core` 6.7.0+ (which introduced `PageHeader`, `PageFooter`, `isPlain`, and `isViewport`). Check `dependencies`, `devDependencies`, and `peerDependencies`. If the version range is ambiguous, check `node_modules/@patternfly/react-core/package.json` for the installed version. In a monorepo, look for the nearest `package.json` that declares `@patternfly/react-core`. If `package.json` cannot be found, ask the user which PatternFly version they are using before proceeding.
 
 Four gate states:
 
@@ -224,6 +224,7 @@ If the project uses bare `<rh-navigation-primary>` or `<rh-footer>` tags, or the
 
 ```tsx
 // rhds.d.ts
+import type * as React from "react";
 import type { RhNavigationPrimary } from "@rhds/elements/rh-navigation-primary/rh-navigation-primary.js";
 import type { RhFooter } from "@rhds/elements/rh-footer/rh-footer.js";
 

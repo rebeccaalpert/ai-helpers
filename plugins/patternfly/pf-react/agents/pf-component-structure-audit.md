@@ -62,7 +62,7 @@ Set **`aria-labelledby`** to match **`ModalHeader`**’s label id, or **`aria-la
 ## Drawer
 
 - **`DrawerPanelContent`** is passed as **`panelContent`** on **`DrawerContent`**, not as a sibling child inside **`DrawerContent`**.
-- Main column content goes in **`DrawerContentBody`** (optional when `DrawerContent` has no children and the `Drawer` uses `isViewport`).
+- Main column content goes in **`DrawerContentBody`** (optional when `DrawerContent` has no main-column children).
 - **`DrawerCloseButton`** belongs under **`DrawerActions`** inside **`DrawerHead`**.
 
 ## Navigation

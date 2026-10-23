@@ -5,3 +5,4 @@ pf_old: false
 pattern: header
 has_header: true
 has_footer: false
+bare_tags_requested: true
