@@ -47,7 +47,7 @@ Use the same structural rules as the **pf-component-structure-audit** agent; dur
 | Toolbar | `<Toolbar>` children aren’t `<ToolbarContent>`; controls in `<ToolbarContent>` / `<ToolbarGroup>` without `<ToolbarItem>` |
 | Card | Raw content in `<Card>` outside `<CardBody>` / `<CardHeader>` / `<CardFooter>`; expandable card missing `<CardExpandableContent>` |
 | Modal | Missing `<ModalHeader>` / `<ModalBody>` / `<ModalFooter>`; missing `aria-labelledby` or `aria-label` |
-| Drawer | `<DrawerPanelContent>` as child of `<DrawerContent>` instead of `panelContent`; `<DrawerContent>` without `<DrawerContentBody>` (unless `DrawerContent` has no children and the `Drawer` uses `isViewport`); `<DrawerCloseButton>` not under `<DrawerActions>` in `<DrawerHead>` |
+| Drawer | `<DrawerPanelContent>` as child of `<DrawerContent>` instead of `panelContent`; `<DrawerContent>` without `<DrawerContentBody>` (unless `DrawerContent` has no main-column children); `<DrawerCloseButton>` not under `<DrawerActions>` in `<DrawerHead>` |
 | Navigation | `<NavItem>` not under `<NavList>`; extra `<NavList>` inside `<NavGroup>` |
 | Table | `<Tr>` direct under `<Table>`; `<Th>` in body rows or `<Td>` in header rows; `<Td>` without `dataLabel` (**WARN**) |
 | DataList | Missing `aria-label` on `<DataList>`; item without `<DataListItemRow>`; row without `<DataListItemCells>`; `<DataListContent>` inside `<DataListItemRow>` (should be sibling) |
