@@ -1,6 +1,6 @@
-name: pf-chatbot-bundle-check-eval
+name: pf-chatbot-bundle-audit-eval
 description: Evaluate ChatBot bundle and audit for applicability, import safety, runtime setup, CSS ordering, and library metadata.
-skill: pf-react:pf-chatbot-bundle-check
+skill: pf-react:pf-chatbot-bundle-audit
 
 execution:
   mode: case

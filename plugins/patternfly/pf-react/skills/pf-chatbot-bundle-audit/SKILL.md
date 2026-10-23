@@ -1,5 +1,5 @@
 ---
-name: pf-chatbot-bundle-check
+name: pf-chatbot-bundle-audit
 description: >
   Audit PatternFly ChatBot imports for tree-shaking opportunities. Use when optimizing ChatBot bundle size or after upgrading @patternfly/chatbot.
 ---
