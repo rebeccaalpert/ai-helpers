@@ -30,7 +30,8 @@ dataset:
     - annotations.yaml: ALL of the following keys are required in every case:
         expect_rhds (bool), expect_decline (bool), rhds_only (bool), pf_old (bool),
         pattern (string — one of: header, footer, plain, drawer, combined, standard, none),
-        has_header (bool), has_footer (bool)
+        has_header (bool), has_footer (bool),
+        fixture (string — "package.json"; auto-loaded by the framework as annotation_fixture_content)
       Optional: bare_tags_requested (bool)
     - package.json: fixture reflecting the case's dependency profile (PF 6.7+ with RHDS, PF 6.7+ only, PF below 6.7, or RHDS-only)
 
@@ -54,7 +55,7 @@ judges:
       annots = outputs.get("annotations", {})
       required_bools = ['expect_rhds', 'expect_decline', 'rhds_only', 'pf_old', 'has_header', 'has_footer']
       optional_bools = ['bare_tags_requested']
-      required_strs = ['pattern']
+      required_strs = ['pattern', 'fixture']
       allowed_patterns = {'header', 'footer', 'plain', 'drawer', 'combined', 'standard', 'none'}
       missing = [k for k in required_bools + required_strs if k not in annots]
       if missing:
@@ -75,13 +76,13 @@ judges:
     check: |
       import json, re
       annots = outputs.get("annotations", {})
-      fixture = outputs.get("fixture_files", {}).get("package.json")
+      fixture = outputs.get("annotation_fixture_content")
       if not fixture:
-          return True, "No package.json fixture available for cross-validation"
+          return False, "Missing package.json fixture content — ensure fixture: package.json is in annotations.yaml"
       try:
           pkg = json.loads(fixture) if isinstance(fixture, str) else fixture
       except (json.JSONDecodeError, TypeError):
-          return True, "Could not parse package.json fixture"
+          return False, "Could not parse package.json fixture"
       deps = {**pkg.get("dependencies", {}), **pkg.get("devDependencies", {}), **pkg.get("peerDependencies", {})}
       has_pf = "@patternfly/react-core" in deps
       has_rhds = any(k.startswith("@rhds/") or k.startswith("@red-hat-design-system/") for k in deps)
