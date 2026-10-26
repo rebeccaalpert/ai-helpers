@@ -42,7 +42,7 @@ traces:
 judges:
   - name: flags_invalid_import
     description: Identifies the incorrect import path in the fixture
-    if: "outputs.get('annotations', {}).get('expect_violations') == True"
+    if: "annotations.get('expect_violations') == True"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -58,7 +58,7 @@ judges:
 
   - name: suggests_correct_path
     description: Recommends the correct PF6 import subpath
-    if: "outputs.get('annotations', {}).get('correct_import', '') != ''"
+    if: "annotations.get('correct_import', '') != ''"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -74,7 +74,7 @@ judges:
 
   - name: no_false_positives
     description: Does not flag valid PF6 imports as violations
-    if: "outputs.get('annotations', {}).get('expect_violations') == False"
+    if: "annotations.get('expect_violations') == False"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -98,7 +98,7 @@ judges:
 
   - name: flags_bundle_issue
     description: Identifies bundle-size anti-patterns (barrel icons, full CSS, duplicate modules)
-    if: "outputs.get('annotations', {}).get('bundle_issue') == True"
+    if: "annotations.get('bundle_issue') == True"
     check: |
       import re
       text = outputs.get("conversation", "")
@@ -123,7 +123,7 @@ judges:
 
   - name: suggests_deep_icon_import
     description: Suggests deep import path for barrel icon imports
-    if: "outputs.get('annotations', {}).get('violation_type') == 'barrel-icon-import'"
+    if: "annotations.get('violation_type') == 'barrel-icon-import'"
     check: |
       import re
       text = outputs.get("conversation", "")
