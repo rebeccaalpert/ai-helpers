@@ -78,7 +78,7 @@ judges:
       annots = outputs.get("annotations", {})
       fixture = outputs.get("annotation_fixture_content")
       if not fixture:
-          return False, "Missing package.json fixture content — ensure fixture: package.json is in annotations.yaml"
+          return False, "Missing package.json fixture content — ensure fixture: package.json is set in the case annotation file"
       try:
           pkg = json.loads(fixture) if isinstance(fixture, str) else fixture
       except (json.JSONDecodeError, TypeError):
