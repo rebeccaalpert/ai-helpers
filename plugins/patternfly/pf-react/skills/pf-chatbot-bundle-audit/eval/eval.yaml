@@ -106,7 +106,7 @@ judges:
       reports = [match.start() for match in re.finditer(r'## ChatBot Bundle Audit', text, re.I)]
       report = text[reports[-1]:] if reports else ""
       finding = re.search(
-          r'src/CodeViewer\.tsx.{0,500}(CodeModal.{0,120}(excluded|broken|not exported)|'
+          r'src/main\.tsx.{0,500}(CodeModal.{0,120}(excluded|broken|not exported)|'
           r'(excluded|broken|not exported).{0,120}CodeModal)',
           report,
           re.I | re.DOTALL,
@@ -120,7 +120,7 @@ judges:
           report,
       )
       if not finding:
-          return False, "Did not tie the excluded CodeModal import to src/CodeViewer.tsx"
+          return False, "Did not tie the excluded CodeModal import to src/main.tsx"
       if not correct or named:
           return False, "Did not provide CodeModal's default dynamic subpath import"
       return True, "Correctly fixes the barrel-excluded CodeModal import"
