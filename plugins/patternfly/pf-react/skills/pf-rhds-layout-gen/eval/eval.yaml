@@ -197,18 +197,17 @@ judges:
     if: "annotations.get('expect_rhds') == True"
     check: |
       import re
-      text = outputs.get("conversation", "")
+      file_text = ""
       for path, content in outputs.get("files", {}).items():
-          if not isinstance(content, str):
-              continue
-          text += "\n" + content
-      bare_tag = re.search(r'<(rh-navigation-primary|rh-footer)[\s>]', text)
+          if isinstance(content, str):
+              file_text += "\n" + content
+      bare_tag = re.search(r'<(rh-navigation-primary|rh-footer)[\s>]', file_text)
       if not bare_tag:
           return True, "Uses React wrapper components — no bare tags to type"
-      has_type_decl = re.search(r'IntrinsicElements', text)
+      has_type_decl = re.search(r'IntrinsicElements', file_text)
       if not has_type_decl:
-          return False, f"Uses bare <{bare_tag.group(1)}> tag without IntrinsicElements declaration — will fail TypeScript"
-      return True, "Bare custom element tags have IntrinsicElements type declaration"
+          return False, f"Uses bare <{bare_tag.group(1)}> tag without IntrinsicElements declaration in generated code — will fail TypeScript"
+      return True, "Bare custom element tags have IntrinsicElements type declaration in generated code"
 
   - name: bare_tags_enforced
     description: When the user explicitly asks for bare custom element tags, the output must contain both the bare tag and an IntrinsicElements declaration
